@@ -1,0 +1,47 @@
+import okx.Trade as Trade
+api_key = "xxxx"
+secret_key = "xxxx"
+passphrase = "xxx"
+import okx.Funding as Funding
+import okx.Account as Account
+import okx.MarketData as MarketData
+import okx.Trade as Trade
+
+flag = "0"  # live trading: 0, demo trading: 1
+tradeAPI = Trade.TradeAPI(api_key, secret_key, passphrase, False, flag)
+accountAPI = Account.AccountAPI(api_key, secret_key, passphrase, False, flag)
+
+##result = accountAPI.get_account_balance()
+##fundingAPI = Funding.FundingAPI(api_key, secret_key, passphrase, False, flag)
+
+##result = fundingAPI.get_currencies()
+##result = accountAPI.get_account_config()
+##print(result)
+#marketDataAPI = MarketData.MarketAPI(flag = flag)
+
+#result = marketDataAPI.get_tickers(instType = "SWAP")
+#print(result)
+
+# limit order
+result = accountAPI.set_leverage(
+    instId = "SUI-USDT-SWAP",
+    lever = "5",
+    mgnMode = "isolated"
+)
+print(result)
+
+result = tradeAPI.place_order(
+    instId = "SUI-USDT-SWAP",
+    tdMode = "isolated",
+    side = "sell",
+    posSide = "net",
+    ordType = "limit",
+    px = "2.0",
+    sz = "100"
+)
+print(result)
+
+if result["code"] == "0":
+    print("Successful order request，order_id = ",result["data"][0]["ordId"])
+else:
+    print("Unsuccessful order request，error_code = ",result["data"][0]["sCode"], ", Error_message = ", result["data"][0]["sMsg"])
